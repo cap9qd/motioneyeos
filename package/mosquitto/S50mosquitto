@@ -1,16 +1,14 @@
 #!/bin/sh
 
+CONF="/data/etc/mosquitto.conf"
+
 start() {
-	printf "Starting mosquitto: "
-	start-stop-daemon -S -q -m -b -p /var/run/mosquitto.pid \
-		--exec /usr/sbin/mosquitto \
-		-- -c /etc/mosquitto/mosquitto.conf
-	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	printf "Starting mosquitto...\n"
+	/usr/sbin/mosquitto -c ${CONF} -d
 }
 stop() {
-	printf "Stopping mosquitto: "
-	start-stop-daemon -K -q -p /var/run/mosquitto.pid
-	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	printf "Stopping mosquitto...\n"
+	kill $(cat /var/run/mosquitto.pid)
 }
 restart() {
 	stop

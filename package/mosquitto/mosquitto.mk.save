@@ -42,8 +42,7 @@ MOSQUITTO_MAKE_OPTS += WITH_ADNS=no
 endif
 
 ifeq ($(BR2_TOOLCHAIN_HAS_THREADS),y)
-MOSQUITTO_MAKE_OPTS += WITH_THREADING=yes
-else
+MOSQUITTO_MAKE_OPTS += WITH_THREADING=yeselse
 MOSQUITTO_MAKE_OPTS += WITH_THREADING=no
 endif
 
@@ -99,7 +98,7 @@ define MOSQUITTO_INSTALL_TARGET_CMDS
 		$(MOSQUITTO_MAKE_OPTS) DESTDIR=$(TARGET_DIR) install
 	rm -f $(TARGET_DIR)/etc/mosquitto/*.example
 	$(INSTALL) -D -m 0644 $(@D)/mosquitto.conf \
-		$(TARGET_DIR)/data/etc/mosquitto/mosquitto.conf
+		$(TARGET_DIR)/etc/mosquitto/mosquitto.conf
 endef
 
 ifeq ($(BR2_PACKAGE_MOSQUITTO_BROKER),y)
