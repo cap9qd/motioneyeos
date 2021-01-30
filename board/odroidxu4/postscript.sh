@@ -15,5 +15,3 @@ cp ${IMG_DIR}/exynos5422-odroidxu4.dtb ${BOOT_DIR}
 cp ${BOARD_DIR}/boot.ini ${BOOT_DIR}
 cp ${BOARD_DIR}/uInitrd ${BOOT_DIR}
 
-cp  ${TARGET}/etc/inittab  ${TARGET}/etc/inittab.bak
-sed -i '/^ttylogin::respawn:\/sbin\/getty -L ttylogin 115200 vt100/a\ttylogin::respawn:\/sbin\/getty -L ttySAC2 115200 vt100'  ${TARGET}/etc/inittab
