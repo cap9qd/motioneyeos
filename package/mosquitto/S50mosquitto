@@ -1,10 +1,39 @@
 #!/bin/sh
 
-CONF="/data/etc/mosquitto.conf"
+CFGFILE="/data/etc/mosquitto.conf"
+PWDFILE="/data/etc/mosquitto_passwd"
+PIDFILE="/var/run/mosquitto.pid"
+PIDNAME="mosquitto"
 
 start() {
+	if [ ! -f ${CFGFILE} ] ; then
+		cp /etc/mosquitto.conf ${CFGFILE}
+	fi
+	if [ ! -f ${PWDFILE} ] ; then
+		cp /etc/mosquitto_passwd ${PWDFILE}
+	fi
+
+	if [ -f ${PIDFILE} ]; then
+		pid=$(< "$PIDFILE")   # a bash builtin way to say: pid=$(cat $pidfile)
+
+		if  kill -0 $pid &&
+			[[ -r /proc/$pid/cmdline ]] && # find the command line of this process
+			xargs -0 echo < /proc/$pid/cmdline | grep -q ${PIDNAME}
+		then
+			# your application is running
+
+			printf  "${PIDNAME} already running...\n"
+			exit 1
+		else
+			# no such running process, or some other program has acquired that pid:
+			# your pid file is out-of-date
+			rm "$PIDFILE"
+			printf "Removing orphaned PID file ${PIDFILE} with process $pid...\n"
+		fi
+	fi
+
 	printf "Starting mosquitto...\n"
-	/usr/sbin/mosquitto -c ${CONF} -d
+	/usr/sbin/mosquitto -c ${CFGFILE} -d
 }
 stop() {
 	printf "Stopping mosquitto...\n"
